@@ -45,5 +45,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jiabei20031104/dsh_theme_terraria.git"
+  },
+  "homepage": "https://github.com/jiabei20031104/dsh_theme_terraria#readme",
+  "bugs": {
+    "url": "https://github.com/jiabei20031104/dsh_theme_terraria/issues"
   }
 }
