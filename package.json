@@ -1,0 +1,49 @@
+{
+  "name": "dsh-theme-terraria",
+  "version": "0.3.0",
+  "description": "Terraria pixel theme for DeepSeek Harness (Desktop + Web): a self-contained themed frontend served by the Host plus an index-injected pixel skin and Desktop takeover layer that cannot break the official UI.",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./web/*": "./web/*",
+    "./skin/*": "./skin/*",
+    "./asset/*": "./asset/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "web",
+    "skin",
+    "asset",
+    "screenshots",
+    "docs",
+    "README.md",
+    "README_EN.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "terraria",
+    "theme",
+    "pixel-art",
+    "web-ui",
+    "desktop"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-web-app": ">=0.1.0-rc.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/10086ggqq/dsh_theme_terraria.git"
+  }
+}
