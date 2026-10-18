@@ -84,7 +84,7 @@
 
    - `<DSH 安装目录>` 指 DeepSeek Harness 的安装目录；作者本机是 `D:\dsh`，因此实际命令为 `& 'D:\dsh\resources\runtime\cli\bin\dsh.cmd' …`。装在其它盘符/目录时替换占位符；`dsh` 已在 PATH 时也可直接用 `dsh plugin …`。
    - `where dsh` 为空（没有全局 `dsh` 命令）时，用上面应用自带的等价入口。不要用 `dsh --profile desktop` 去启动宿主——桌面宿主会拒绝这种启动方式；`plugin --profile desktop` 才是被允许的管理入口。
-   - 有 git 时也可以用 `github:10086ggqq/dsh_theme_terraria`；**没有 git 时 pnpm 会报 `'git' 不是内部或外部命令`**（实测），请改用本地绝对路径。
+   - 有 git 时也可以直接用 GitHub 来源：`dsh plugin --profile desktop add github:jiabei20031104/dsh_theme_terraria`；**没有 git 时 pnpm 会报 `'git' 不是内部或外部命令`**（实测），请改用本地绝对路径。
    - 应用内 **Plugin Hub → 本地 / Git 来源安装** 填同一个绝对路径也可以（本地安装同样走 pnpm，不需要 git）。
 
 2. 检查 profile（可选）：
@@ -131,8 +131,10 @@
 浏览器路径需要真实的 `dsh` CLI（应用自带的 `dsh.cmd` 是桌面宿主管理入口，不负责 `dsh web`）：
 
 ```sh
-# 本仓库未发布 npm，用本地绝对路径；有 git 时才用 github:owner/repo
-dsh plugin --profile web add '<本仓库绝对路径>'
+# 推荐：有 git 时直接从 GitHub 安装（本仓库未发布 npm）
+dsh plugin --profile web add github:jiabei20031104/dsh_theme_terraria
+# 没有 git 时改用本地绝对路径：
+# dsh plugin --profile web add '<本仓库绝对路径>'
 
 dsh web
 # 默认地址：http://127.0.0.1:3080/
