@@ -27,7 +27,7 @@
 
 **dsh_theme_terraria**（npm 包名 `dsh-theme-terraria`）是 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（dsh）的泰拉瑞亚主题插件。它用一个自包含的 `index.html`（约 230 KB，零外部 JS 依赖）替换官方 React 前端，把「AI 编码代理控制台」包装成一场像素冒险：
 
-- **标准 dsh 插件包**：本仓库本身就是一个 npm 包——入口 `index.js` 导出插件规范硬性要求的 `apply(ctx)`，`cordis.patch.yml` 声明 `dsh.bundle` 补丁层。桌面版装进 **desktop profile**，浏览器版装进 web profile；本仓库尚未发布到 npm，默认用本地绝对路径安装（见第 2 节），不改动 dsh 安装中的任何文件。
+- **标准 dsh 插件包**：本仓库本身就是一个 npm 包（**已发布到 npm，包名 `dsh-theme-terraria`**）——入口 `index.js` 导出插件规范硬性要求的 `apply(ctx)`，`cordis.patch.yml` 声明 `dsh.bundle` 补丁层。桌面版装进 **desktop profile**，浏览器版装进 web profile；推荐直接按 npm 包名安装（见第 2 节），也支持 GitHub 来源与本地路径，不改动 dsh 安装中的任何文件。
 - **不是纯皮肤**：主题直连 dsh 宿主的 JSON-RPC（HTTP 上行）+ WebSocket（事件下行）协议，会话创建、消息发送、流式输出、工具审批、模型切换、工作空间管理全部真实可用。填入 DeepSeek API 密钥即可与模型对话。
 - **四个难度档 = 四个 Agent 预设**：旅途（standard，全功能编码代理）、软核（code，Code Mode SDK）、中核（minimal，极简双工具）、硬核（cordis，自定义 preset 模板）。切难度就是切预设，插件的组合随难度实时变化。
 - **单文件交付**：整块 UI 内联在一个 HTML 文件里，由插件直接伺服，无任何运行时框架、无构建步骤。
@@ -65,9 +65,9 @@
 
 桌面应用**只读 desktop profile**。把主题装进 web profile 不会让桌面窗口出现主题——这是「插件显示已安装，但桌面还是官方界面」最常见的原因。反过来，装进 desktop profile 也不会改变浏览器路径。
 
-### 桌面版安装（推荐路径；无需 git、无需 npm 发布）
+### 桌面版安装（推荐：按 npm 包名安装）
 
-> 本仓库尚未发布到 npm（`registry.npmjs.org/dsh-theme-terraria` 返回 404），且部分机器没有 git。**默认使用应用自带 CLI + 本仓库的绝对路径安装。**
+> 插件已发布到 npm（包名 `dsh-theme-terraria`），**推荐用应用自带 CLI 按包名安装（无需 git、无需下载源码）**；没有网络或想本地改源码时，再用仓库绝对路径安装。
 
 0. **完全退出应用**（托盘 → 退出），确认进程已消失。profile 在宿主运行时不会重读，注入行也只在启动时快照一次。
 
@@ -75,17 +75,25 @@
    Get-Process 'DeepSeek Harness' -ErrorAction SilentlyContinue
    ```
 
-1. 安装（把 `<本仓库绝对路径>` 换成真实路径；**必须是绝对路径**，且目录里有 `package.json`）：
+1. 安装（三选一，**方式①按 npm 包名最省事**）：
 
    ```powershell
-   & '<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop add '<本仓库绝对路径>'
-   # 本机示例（作者环境 D:\dsh）：... add 'D:\code\dsh_theme_terraria-main'
+   # ① 推荐：按 npm 包名安装（已发布，无需 git、无需下载源码）
+   & '<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop add dsh-theme-terraria
+   # 作者本机（D:\dsh）：& 'D:\dsh\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop add dsh-theme-terraria
+
+   # ② 有 git 时直接从 GitHub 安装：
+   # & '<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop add github:jiabei20031104/dsh_theme_terraria
+
+   # ③ 没网络 / 想本地改源码：用仓库绝对路径（必须是绝对路径，且目录里有 package.json）
+   # & '<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop add '<本仓库绝对路径>'
+   # 作者本机示例：... add 'D:\code\dsh_theme_terraria-main'
    ```
 
    - `<DSH 安装目录>` 指 DeepSeek Harness 的安装目录；作者本机是 `D:\dsh`，因此实际命令为 `& 'D:\dsh\resources\runtime\cli\bin\dsh.cmd' …`。装在其它盘符/目录时替换占位符；`dsh` 已在 PATH 时也可直接用 `dsh plugin …`。
    - `where dsh` 为空（没有全局 `dsh` 命令）时，用上面应用自带的等价入口。不要用 `dsh --profile desktop` 去启动宿主——桌面宿主会拒绝这种启动方式；`plugin --profile desktop` 才是被允许的管理入口。
-   - 有 git 时也可以直接用 GitHub 来源：`dsh plugin --profile desktop add github:jiabei20031104/dsh_theme_terraria`；**没有 git 时 pnpm 会报 `'git' 不是内部或外部命令`**（实测），请改用本地绝对路径。
-   - 应用内 **Plugin Hub → 本地 / Git 来源安装** 填同一个绝对路径也可以（本地安装同样走 pnpm，不需要 git）。
+   - 方式②从 GitHub 安装需要本机有 git；**没有 git 时 pnpm 会报 `'git' 不是内部或外部命令`**（实测），请改用方式①的包名或方式③的本地绝对路径。
+   - 应用内 **Plugin Hub** 搜索框直接搜 `dsh-theme-terraria` 即可安装；「本地 / Git 来源安装」也可填仓库绝对路径（本地安装同样走 pnpm，不需要 git）。
 
 2. 检查 profile（可选）：
 
@@ -131,9 +139,11 @@
 浏览器路径需要真实的 `dsh` CLI（应用自带的 `dsh.cmd` 是桌面宿主管理入口，不负责 `dsh web`）：
 
 ```sh
-# 推荐：有 git 时直接从 GitHub 安装（本仓库未发布 npm）
-dsh plugin --profile web add github:jiabei20031104/dsh_theme_terraria
-# 没有 git 时改用本地绝对路径：
+# 推荐：按 npm 包名安装（已发布到 npm，无需 git、无需下载源码）
+dsh plugin --profile web add dsh-theme-terraria
+# 有 git 时也可直接从 GitHub 安装：
+# dsh plugin --profile web add github:jiabei20031104/dsh_theme_terraria
+# 没网络 / 想本地改源码时，用仓库绝对路径：
 # dsh plugin --profile web add '<本仓库绝对路径>'
 
 dsh web
@@ -175,8 +185,8 @@ dsh web
 |---|---|---|
 | 插件装上了，桌面窗口仍是官方界面 | Hub/CLI 显示「运行中」，窗口没变 | 主题装进了 **web profile**，桌面应用只读 **desktop profile**；用 `plugin --profile desktop add` 重装，并**完整退出应用再启动**（注入行是启动时的一次性快照） |
 | `dsh` 不是内部或外部命令 | `where dsh` 为空、命令找不到 | 用应用自带入口：`& '<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop …`（作者本机为 `D:\dsh`） |
-| Hub/CLI 安装报 `'git' 不是内部或外部命令` | 用 `github:` / `git+https:` 安装失败 | 本机没有 git：改用**本地绝对路径**安装；不要点 GitHub 安装 |
-| 按包名安装返回 404 | `registry.npmjs.org/dsh-theme-terraria` 不存在 | 尚未发布 npm：用本地绝对路径安装，不要用包名 |
+| Hub/CLI 安装报 `'git' 不是内部或外部命令` | 用 `github:` / `git+https:` 安装失败 | 本机没有 git：直接用 **npm 包名** `dsh-theme-terraria` 安装（方式①，无需 git），或改用本地绝对路径 |
+| 按包名安装找不到包 / 404 | registry 被解析到只读镜像源或网络问题 | 确认能访问 `registry.npmjs.org`，或在插件管理器「安装源」里切到官方源；仍失败就改用 GitHub 来源或本地绝对路径 |
 | 桌面窗口里看不到主题、连接一直转圈 | 停在主题页但连不上宿主 | 标题屏点「切回官方界面」或按 `Alt+O` 先回到可用界面，再把 <kbd>F12</kbd> 控制台的报错发出来；手工打开主题页时确认 URL 带 `?host=` |
 | 接管后鲸鱼挂件 / AgentTeams / dream-skin 的界面消失 | 这些插件的客户端 UI 不见 | 预期行为：主题页不加载 `/plugins/*/client.js`。需要它们时在启动应用前设 `DSH_TERRARIA_STANDALONE=0`（官方 UI + 像素皮肤） |
 | 同时装了两个“换 dist”主题 | 只有一个主题生效，日志出现 webRuntime 警告 | 同一 profile 只留一个；本版本检测到 `webRuntime` 已存在会跳过委托、不会崩宿主，但界面只呈现先挂载的主题 |
@@ -478,8 +488,8 @@ dsh web   # 重启后即恢复官方 React 前端
 ### 提交收录与发布
 
 - 在 GitHub 仓库 **Topics** 中添加 `dsh-plugin`——收录爬虫据此识别本仓库是一个 DSH 插件；
-- 插件入口 `index.js` 导出 `apply(ctx)`；安装命令对桌面/浏览器分别使用 `--profile desktop` / `--profile web`，并在包发布 npm 之前使用本地绝对路径；
-- **本仓库尚未提交/收录到任何第三方插件目录**：顶部徽章只声明版本与桌面兼容性，不再写「已收录」；等 dsh-plugin.org 等目录出现实际详情页后再补链接与徽章；
+- 插件入口 `index.js` 导出 `apply(ctx)`；安装命令对桌面/浏览器分别使用 `--profile desktop` / `--profile web`，**已发布 npm，可直接按包名 `dsh-theme-terraria` 安装**（`dsh plugin --profile web add dsh-theme-terraria`），也支持 GitHub 来源与本地绝对路径；
+- **已向 dsh-plugin.org 提交收录申请**（Issue #277，等待市场扫描与人工核实）：顶部徽章暂只声明版本与桌面兼容性；等目录出现实际详情页后再补收录链接与徽章；
 - 上传文件/排除文件、仓库设置与 Release 文案见 [`docs/GITHUB_UPLOAD.md`](docs/GITHUB_UPLOAD.md)。
 
 ### 许可
