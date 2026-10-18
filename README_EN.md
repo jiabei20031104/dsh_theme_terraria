@@ -84,7 +84,7 @@ The Desktop app reads **only the desktop profile**. Installing into the web prof
 
    - `<DSH install dir>` is the DeepSeek Harness installation directory. On the author's machine it is `D:\dsh`, so the real command is `& 'D:\dsh\resources\runtime\cli\bin\dsh.cmd' …`; replace the placeholder if you installed elsewhere. When `dsh` is already on PATH you may use `dsh plugin …` directly.
    - When `where dsh` is empty (no global `dsh` command), use the app-bundled entry above. Do not launch the Host with `dsh --profile desktop` — the Desktop host rejects that; `plugin --profile desktop` is the supported management entry.
-   - With git available you may also use `github:10086ggqq/dsh_theme_terraria`; **without git, pnpm fails with `'git' is not recognized as an internal or external command`** (observed), so use the local absolute path instead.
+   - With git available you can install straight from GitHub: `dsh plugin --profile desktop add github:jiabei20031104/dsh_theme_terraria`; **without git, pnpm fails with `'git' is not recognized as an internal or external command`** (observed), so use the local absolute path instead.
    - The in-app **Plugin Hub → local / Git source install** accepts the same absolute path (the local install also goes through pnpm and needs no git).
 
 2. Check the profile (optional):
@@ -130,8 +130,10 @@ Desktop-only adaptations: native caption colours (the preload reads the page's `
 The browser path needs a real `dsh` CLI (the app-bundled `dsh.cmd` is the Desktop host management entry, not `dsh web`):
 
 ```sh
-# Not on npm yet: use the local absolute path; use github:owner/repo only when git is available
-dsh plugin --profile web add '<absolute path to this repo>'
+# Recommended when git is available: install straight from GitHub (not on npm yet)
+dsh plugin --profile web add github:jiabei20031104/dsh_theme_terraria
+# Without git, use the local absolute path instead:
+# dsh plugin --profile web add '<absolute path to this repo>'
 
 dsh web
 # Default URL: http://127.0.0.1:3080/
