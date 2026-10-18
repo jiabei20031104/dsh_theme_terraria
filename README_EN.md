@@ -27,7 +27,7 @@
 
 **dsh_theme_terraria** (npm package name `dsh-theme-terraria`) is a Terraria-themed plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (dsh). It replaces the official React frontend with a single self-contained `index.html` (~230 KB, zero external JS dependencies), wrapping the "AI coding agent console" as a pixel adventure:
 
-- **A standard dsh plugin package**: this repository is itself an npm package — the entry `index.js` exports the `apply(ctx)` required by the plugin spec and `cordis.patch.yml` declares the `dsh.bundle` patch layer. Install it into the **desktop profile** for the Desktop app or into the web profile for the browser; the package is not on npm yet, so the default install uses a local absolute path (see section 2) and never touches any file in the dsh installation.
+- **A standard dsh plugin package**: this repository is itself an npm package (**published to npm as `dsh-theme-terraria`**) — the entry `index.js` exports the `apply(ctx)` required by the plugin spec and `cordis.patch.yml` declares the `dsh.bundle` patch layer. Install it into the **desktop profile** for the Desktop app or into the web profile for the browser; installing by the npm package name is recommended (see section 2), with GitHub-source and local-path installs also supported, and it never touches any file in the dsh installation.
 - **Not a mere skin**: the theme talks directly to the dsh host over JSON-RPC (HTTP upstream) + WebSocket (event downstream). Session creation, message sending, streaming output, tool approvals, model switching, and workspace management are all fully functional. Enter a DeepSeek API key and you can chat with the model for real.
 - **Four difficulty tiers = four agent presets**: Journey (standard, full-featured coding agent), Softcore (code, Code Mode SDK), Mediumcore (minimal, bare dual-tool agent), Hardcore (cordis, custom preset template). Switching difficulty switches the preset — the plugin composition changes live with it.
 - **Single-file delivery**: the entire UI is inlined in one HTML file served directly by the plugin — no runtime framework, no build step.
@@ -65,9 +65,9 @@
 
 The Desktop app reads **only the desktop profile**. Installing into the web profile will not make the Desktop window show the theme — this is the most common cause of "the plugin says installed but the window is still official." Conversely, the desktop profile does not affect the browser path.
 
-### Desktop Installation (recommended; no git, no npm publish needed)
+### Desktop Installation (recommended: by npm package name)
 
-> This repository is **not published to npm yet** (`registry.npmjs.org/dsh-theme-terraria` returns 404), and some machines have no git. **Use the app-bundled CLI with the absolute path to this repository.**
+> The plugin is **published to npm** (package name `dsh-theme-terraria`); **install it by package name with the app-bundled CLI (no git, no source download needed)**. Use the repository's absolute path only when offline or when editing the source locally.
 
 0. **Quit the app completely** (tray → Quit) and confirm the process is gone. The profile is not re-read while the Host runs, and injection rows are snapshotted once at startup.
 
@@ -75,17 +75,25 @@ The Desktop app reads **only the desktop profile**. Installing into the web prof
    Get-Process 'DeepSeek Harness' -ErrorAction SilentlyContinue
    ```
 
-1. Install (replace `<absolute path to this repo>` with the real path; it **must be absolute** and contain `package.json`):
+1. Install (three options; **option ① by npm package name is the easiest**):
 
    ```powershell
-   & '<DSH install dir>\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop add '<absolute path to this repo>'
-   # author's machine (D:\dsh): ... add 'D:\code\dsh_theme_terraria-main'
+   # ① Recommended: by npm package name (published; no git, no source download)
+   & '<DSH install dir>\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop add dsh-theme-terraria
+   # author's machine (D:\dsh): & 'D:\dsh\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop add dsh-theme-terraria
+
+   # ② With git, install straight from GitHub:
+   # & '<DSH install dir>\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop add github:jiabei20031104/dsh_theme_terraria
+
+   # ③ Offline / editing the source locally: use the repo absolute path (must be absolute and contain package.json)
+   # & '<DSH install dir>\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop add '<absolute path to this repo>'
+   # author's machine: ... add 'D:\code\dsh_theme_terraria-main'
    ```
 
    - `<DSH install dir>` is the DeepSeek Harness installation directory. On the author's machine it is `D:\dsh`, so the real command is `& 'D:\dsh\resources\runtime\cli\bin\dsh.cmd' …`; replace the placeholder if you installed elsewhere. When `dsh` is already on PATH you may use `dsh plugin …` directly.
    - When `where dsh` is empty (no global `dsh` command), use the app-bundled entry above. Do not launch the Host with `dsh --profile desktop` — the Desktop host rejects that; `plugin --profile desktop` is the supported management entry.
-   - With git available you can install straight from GitHub: `dsh plugin --profile desktop add github:jiabei20031104/dsh_theme_terraria`; **without git, pnpm fails with `'git' is not recognized as an internal or external command`** (observed), so use the local absolute path instead.
-   - The in-app **Plugin Hub → local / Git source install** accepts the same absolute path (the local install also goes through pnpm and needs no git).
+   - Option ② installs from GitHub and needs git; **without git, pnpm fails with `'git' is not recognized as an internal or external command`** (observed) — use option ①'s package name or option ③'s local path instead.
+   - In the in-app **Plugin Hub**, just search for `dsh-theme-terraria`; the "local / Git source install" row also accepts the repo absolute path (the local install also goes through pnpm and needs no git).
 
 2. Check the profile (optional):
 
@@ -130,9 +138,11 @@ Desktop-only adaptations: native caption colours (the preload reads the page's `
 The browser path needs a real `dsh` CLI (the app-bundled `dsh.cmd` is the Desktop host management entry, not `dsh web`):
 
 ```sh
-# Recommended when git is available: install straight from GitHub (not on npm yet)
-dsh plugin --profile web add github:jiabei20031104/dsh_theme_terraria
-# Without git, use the local absolute path instead:
+# Recommended: by npm package name (published to npm; no git, no source download)
+dsh plugin --profile web add dsh-theme-terraria
+# With git, you can also install straight from GitHub:
+# dsh plugin --profile web add github:jiabei20031104/dsh_theme_terraria
+# Offline / editing the source locally, use the repo absolute path:
 # dsh plugin --profile web add '<absolute path to this repo>'
 
 dsh web
@@ -174,8 +184,8 @@ dsh web
 |---|---|---|
 | Plugin installed but the Desktop window stays official | Hub/CLI says "running" and nothing changes | It was installed into the **web profile**; the Desktop app reads only the **desktop profile**. Reinstall with `plugin --profile desktop add` and **quit + relaunch the app** (injection rows are a startup snapshot) |
 | `dsh` is not recognized | `where dsh` is empty and the command is missing | Use the app-bundled entry: `& '<DSH install dir>\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop …` (the author's machine: `D:\dsh`) |
-| Hub/CLI install fails with `'git' is not recognized` | Installing from `github:` / `git+https:` fails | No git on this machine: install from a **local absolute path** instead |
-| Installing by package name returns 404 | `registry.npmjs.org/dsh-theme-terraria` does not exist | Not published to npm yet: use the local absolute path, not the package name |
+| Hub/CLI install fails with `'git' is not recognized` | Installing from `github:` / `git+https:` fails | No git on this machine: install by the **npm package name** `dsh-theme-terraria` (option ①, no git needed), or use a local absolute path |
+| Installing by package name fails / 404 | The registry resolves to a read-only mirror or a network issue | Make sure `registry.npmjs.org` is reachable, or switch the Plugin Hub's "registry" to the official source; otherwise fall back to the GitHub source or a local absolute path |
 | Theme page loads but never connects | Status keeps reconnecting | Use "切回官方界面" on the theme title screen, or <kbd>Alt</kbd>+<kbd>O</kbd>, to get a working UI back, then send the <kbd>F12</kbd> console error; when opening the theme page by hand, make sure the URL carries `?host=` |
 | Whale widget / AgentTeams / dream-skin UI disappears after takeover | Their client-side UI is gone | Expected: the theme page does not load `/plugins/*/client.js`. Set `DSH_TERRARIA_STANDALONE=0` before launching the app to get the official UI plus the pixel skin |
 | Two dist-replacing themes installed at once | Only one theme applies; a webRuntime warning appears in the log | Keep one per profile. This version detects an existing `webRuntime`, skips the delegation and does not crash the Host, but only the first theme's UI is presented |
@@ -459,8 +469,8 @@ The theme mounts and unmounts wholesale through the plugin mechanism — it neve
 ### Submitting and Publishing
 
 - Add the `dsh-plugin` topic to the GitHub repository's **Topics** — the listing crawler uses it to identify this repository as a DSH plugin;
-- The plugin entry `index.js` exports `apply(ctx)`; installation uses `--profile desktop` for the Desktop app and `--profile web` for the browser, with a local absolute path until the package is published to npm;
-- **This repository has not been submitted to / listed in any third-party plugin directory yet**: the top badges only state the version and Desktop compatibility and no longer claim "listed"; add a real listing link and badge once dsh-plugin.org (or another directory) has a live detail page;
+- The plugin entry `index.js` exports `apply(ctx)`; installation uses `--profile desktop` for the Desktop app and `--profile web` for the browser. It is **published to npm, so install it directly by the package name `dsh-theme-terraria`** (`dsh plugin --profile web add dsh-theme-terraria`), with GitHub-source and local-path installs also supported;
+- **A listing request has been submitted to dsh-plugin.org** (issue #277, awaiting the marketplace scan and manual review): the top badges state only the version and Desktop compatibility for now; add a real listing link and badge once the directory has a live detail page;
 - See [`docs/GITHUB_UPLOAD.md`](docs/GITHUB_UPLOAD.md) for the upload/exclude file list, repository settings, and release notes.
 
 ### License
